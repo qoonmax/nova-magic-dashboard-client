@@ -1,0 +1,53 @@
+version: '3.4'
+
+networks:
+    internal:
+        external: false
+
+services:
+    nginx:
+        image: nginx:latest
+        networks:
+            - internal
+        ports:
+            - "8081:80"
+        volumes:
+            - .:/var/www/
+            - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+            - ./docker/nginx/logs:/var/log/nginx/
+        depends_on:
+            - php
+        restart: unless-stopped
+        container_name: nmdc_nginx
+
+    php:
+        build:
+            context: .
+            dockerfile: ./docker/php/Dockerfile
+            args:
+                - NOVA_USERNAME=${NOVA_USERNAME}
+                - NOVA_PASSWORD=${NOVA_PASSWORD}
+        user: "1000:33"
+        networks:
+            - internal
+        volumes:
+            - .:/var/www/
+            - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+        restart: unless-stopped
+        container_name: nmdc_php
+
+    postgres:
+        image: library/postgres:12.3
+        volumes:
+            - ./pgsql_data:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_DB=${DB_DATABASE}
+            - POSTGRES_USER=${DB_USERNAME}
+            - POSTGRES_PASSWORD=${DB_PASSWORD}
+            - PGGSSENCMODE=disable
+        ports:
+            - "5432:5432"
+        networks:
+            - internal
+        restart: unless-stopped
+        container_name: nmdc_postgres

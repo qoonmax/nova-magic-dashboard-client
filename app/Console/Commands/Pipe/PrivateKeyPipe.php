@@ -2,12 +2,11 @@
 
 namespace App\Console\Commands\Pipe;
 
-use Illuminate\Http\Request;
 use function Laravel\Prompts\text;
 
 class PrivateKeyPipe extends Pipe
 {
-    public function handle(Request $request, callable $next): Request
+    public function handle(Context $context, callable $next): Context
     {
         //TODO: Move to config
         $defaultPrivateKey = env('NOVA_MAGIC_DASHBOARD_PRIVATE_KEY') ?? '';
@@ -24,8 +23,8 @@ class PrivateKeyPipe extends Pipe
             hint: 'You can find the private key in your personal account. (https://nova.magic-dashboard.com/profile)'
         );
 
-        $request->headers->set('Authorization', $privateKey);
+        $context->setPrivateKey($privateKey);
 
-        return $next($request);
+        return $next($context);
     }
 }

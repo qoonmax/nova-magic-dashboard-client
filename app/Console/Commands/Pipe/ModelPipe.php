@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\Pipe;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use function Laravel\Prompts\note;
 use function Laravel\Prompts\select;
@@ -10,7 +9,7 @@ use function Laravel\Prompts\spin;
 
 class ModelPipe extends Pipe
 {
-    public function handle(Request $request, callable $next): Request
+    public function handle(Context $context, callable $next): Context
     {
         spin(fn() => sleep(2), "🔎  <fg=white>I'm looking for models in your project...</>");
 
@@ -44,6 +43,6 @@ class ModelPipe extends Pipe
             }
         }
 
-        return $next($request);
+        return $next($context);
     }
 }

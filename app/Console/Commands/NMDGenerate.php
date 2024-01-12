@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Console\Commands\Pipe\ClientEnvironmentPipe;
+use App\Console\Commands\Pipe\Context;
 use App\Console\Commands\Pipe\DatabasePipe;
 use App\Console\Commands\Pipe\HelloPipe;
 use App\Console\Commands\Pipe\ModelPipe;
@@ -36,15 +37,12 @@ class NMDGenerate extends Command
      * Execute the console command.
      * @throws GuzzleException
      */
-    public function handle()
+    public function handle(): void
     {
-        $request = Request::capture();
+        $context = new Context();
 
-        //TODO: Move to pipe
-        $request->headers->set('Content-Type', 'application/json');
-
-        $processedRequest = app(Pipeline::class)
-            ->send($request)
+        $payload = app(Pipeline::class)
+            ->send($context)
             ->through([
                 HelloPipe::class,
                 ModelPipe::class,
@@ -57,9 +55,14 @@ class NMDGenerate extends Command
         $response = $client->post('https://webhook.site/b2c24ce5-0e28-499b-9307-88693fa8b52e', [
             'headers' => [
                 'Content-Type' => 'application/json',
-                'Authorization' =>  $processedRequest->header('Authorization'),
+                'Authorization' =>  $payload->getPrivateKey()
             ],
-            'body' => json_encode($processedRequest->all()) // Assuming you need to send the entire request data.
+            'body' => json_encode([
+                'client_environment' => $payload->getClientEnvironment(),
+                'database' => [
+                    'tables' => $payload->getTables(),
+                ],
+            ])
         ]);
 
 

@@ -2,13 +2,12 @@
 
 namespace App\Console\Commands\Pipe;
 
-use Illuminate\Http\Request;
 use function Laravel\Prompts\note;
 use function Laravel\Prompts\spin;
 
 class ClientEnvironmentPipe extends Pipe
 {
-    public function handle(Request $request, callable $next): Request
+    public function handle(Context $context, callable $next): Context
     {
         spin(fn() => sleep(2), "🔎  <fg=white>Getting the environment data...</>");
 
@@ -38,10 +37,8 @@ class ClientEnvironmentPipe extends Pipe
             }
         }
 
-        $request->merge([
-            'client_environment' => $variables
-        ]);
+        $context->setClientEnvironment($variables);
 
-        return $next($request);
+        return $next($context);
     }
 }

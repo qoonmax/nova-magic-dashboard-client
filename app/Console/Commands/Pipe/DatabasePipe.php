@@ -4,11 +4,9 @@ namespace App\Console\Commands\Pipe;
 
 use App\Console\Commands\DatabaseSchemaInspector\SchemaInspectorFactory;
 use App\Console\Commands\Exceptions\DriverNotSupported;
-use Illuminate\Http\Request;
 use function Laravel\Prompts\multiselect;
 use function Laravel\Prompts\note;
 use function Laravel\Prompts\spin;
-use function Laravel\Prompts\text;
 
 class DatabasePipe extends Pipe
 {
@@ -23,7 +21,7 @@ class DatabasePipe extends Pipe
         'nova_field_attachments',
     ];
 
-    public function handle(Request $request, callable $next): Request
+    public function handle(Context $context, callable $next): Context
     {
         $databaseDriver = config('database.default');
 
@@ -68,12 +66,8 @@ class DatabasePipe extends Pipe
             ];
         }
 
-        $request->merge([
-            'database' => [
-                'tables' => $tables
-            ]
-        ]);
+        $context->setTables($tables);
 
-        return $next($request);
+        return $next($context);
     }
 }

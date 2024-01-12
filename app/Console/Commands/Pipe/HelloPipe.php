@@ -2,16 +2,14 @@
 
 namespace App\Console\Commands\Pipe;
 
-use function Laravel\Prompts\note;
+use function Laravel\Prompts\intro;
+
 
 class HelloPipe extends Pipe
 {
     public function handle(Context $context, callable $next): Context
     {
-        note(
-            message: "🧙  <fg=cyan>Welcome to the Nova Magic Dashboard generator!</>",
-            type: 'info'
-        );
+        intro("🧙  <fg=cyan>Welcome to the Nova Magic Dashboard generator!</>");
 
         return $next($context);
     }

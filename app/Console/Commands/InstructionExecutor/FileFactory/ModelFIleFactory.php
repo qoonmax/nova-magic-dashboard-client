@@ -1,19 +1,21 @@
 <?php
 
-namespace App\Console\Commands\FileFactory;
+namespace App\Console\Commands\InstructionExecutor\FileFactory;
 
-class ModelFIleFactory implements FileFactory
+class ModelFIleFactory extends FileFactory
 {
-    public static function create(string $modelName, string $content): void
+    protected function create(string $fileName, string $content): string
     {
         $modelsDirectory = app_path('Models');
         if (!file_exists($modelsDirectory)) {
             mkdir($modelsDirectory, 0777, true);
         }
 
-        $modelName = ucfirst(mb_strtolower($modelName));
+        $modelName = ucfirst(mb_strtolower($fileName));
         $filePath = $modelsDirectory . '/' . $modelName . '.php';
 
         file_put_contents($filePath, $content);
+
+        return $filePath;
     }
 }

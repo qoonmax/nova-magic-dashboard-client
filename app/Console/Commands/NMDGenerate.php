@@ -2,6 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Console\Commands\InstructionExecutor\FileFactory\ModelFIleFactory;
+use App\Console\Commands\InstructionExecutor\FileFactory\ResourceFileFactory;
+use App\Console\Commands\InstructionExecutor\InstructionExecutor;
 use App\Console\Commands\Pipe\ClientEnvironmentPipe;
 use App\Console\Commands\Pipe\Context;
 use App\Console\Commands\Pipe\DatabasePipe;
@@ -10,12 +13,9 @@ use App\Console\Commands\Pipe\ModelPipe;
 use App\Console\Commands\Pipe\PrivateKeyPipe;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
-use Illuminate\Http\Request;
 use Illuminate\Pipeline\Pipeline;
-use Illuminate\Support\Facades\DB;
-use function Laravel\Prompts\text;
-use function Laravel\Prompts\multiselect;
-use function Laravel\Prompts\spin;
+use function Laravel\Prompts\intro;
+use function Laravel\Prompts\outro;
 
 class NMDGenerate extends Command
 {
@@ -65,6 +65,31 @@ class NMDGenerate extends Command
             ])
         ]);
 
+        $instructions = json_decode($response->getBody()->getContents(), true);
 
+        //mock instructions
+        $instructions = [
+            'models' => [
+                [
+                    'name' => 'Mock',
+                    'content' => '<?php'
+                ]
+            ],
+            'resources' => [
+                [
+                    'name' => 'Mock',
+                    'content' => '<?php'
+                ]
+            ]
+        ];
+
+        $instructionExecutor = new InstructionExecutor(
+            $instructions,
+            new ModelFileFactory(),
+            new ResourceFileFactory(),
+        );
+        $instructionExecutor->execute();
+
+        outro("🧙  <fg=cyan>Completed!</>");
     }
 }

@@ -2,29 +2,19 @@
 
 namespace App\Console\Commands\InstructionExecutor;
 
-use App\Console\Commands\InstructionExecutor\FileFactory\ModelFileFactory;
-use App\Console\Commands\InstructionExecutor\FileFactory\ResourceFileFactory;
-
 readonly class InstructionExecutor
 {
     public function __construct(
-        private array $instructions,
-        private ModelFileFactory $modelFileFactory,
-        private ResourceFileFactory $resourceFileFactory
+        private array       $instructions,
+        private FIleFactory $modelFileFactory,
     )
     {}
 
     public function execute(): void
     {
-        if ($this->instructions['models']) {
-            foreach ($this->instructions['models'] as $model) {
-                $this->modelFileFactory->createAndLog($model['name'], $model['content']);
-            }
-        }
-
-        if ($this->instructions['resources']) {
-            foreach ($this->instructions['resources'] as $resource) {
-                $this->resourceFileFactory->createAndLog($resource['name'], $resource['content']);
+        if ($this->instructions['for_creating']) {
+            foreach ($this->instructions['for_creating'] as $instruction) {
+                $this->modelFileFactory->create($instruction['path'], $instruction['content']);
             }
         }
     }

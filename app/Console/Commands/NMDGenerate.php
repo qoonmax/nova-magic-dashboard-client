@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Console\Commands\InstructionExecutor\FileFactory\ModelFIleFactory;
 use App\Console\Commands\InstructionExecutor\FileFactory\ResourceFileFactory;
 use App\Console\Commands\InstructionExecutor\InstructionExecutor;
+use App\Console\Commands\InstructionExecutor\FIleFactory;
 use App\Console\Commands\Pipe\ClientEnvironmentPipe;
 use App\Console\Commands\Pipe\Context;
 use App\Console\Commands\Pipe\DatabasePipe;
@@ -14,7 +14,6 @@ use App\Console\Commands\Pipe\PrivateKeyPipe;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
 use Illuminate\Pipeline\Pipeline;
-use function Laravel\Prompts\intro;
 use function Laravel\Prompts\outro;
 
 class NMDGenerate extends Command
@@ -55,7 +54,7 @@ class NMDGenerate extends Command
         $response = $client->post('https://webhook.site/b2c24ce5-0e28-499b-9307-88693fa8b52e', [
             'headers' => [
                 'Content-Type' => 'application/json',
-                'Authorization' =>  $payload->getPrivateKey()
+                'Authorization' => $payload->getPrivateKey()
             ],
             'body' => json_encode([
                 'client_environment' => $payload->getClientEnvironment(),
@@ -69,24 +68,21 @@ class NMDGenerate extends Command
 
         //mock instructions
         $instructions = [
-            'models' => [
+            'for_creating' => [
                 [
-                    'name' => 'Mock',
-                    'content' => '<?php'
-                ]
-            ],
-            'resources' => [
+                    'path' => 'app/Models/Mock.php',
+                    'content' => '<?php echo "Hello World";'
+                ],
                 [
-                    'name' => 'Mock',
-                    'content' => '<?php'
+                    'path' => 'app/Nova/Mock.php',
+                    'content' => '<?php echo "Hello World";'
                 ]
             ]
         ];
 
         $instructionExecutor = new InstructionExecutor(
             $instructions,
-            new ModelFileFactory(),
-            new ResourceFileFactory(),
+            new FIleFactory()
         );
         $instructionExecutor->execute();
 

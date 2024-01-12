@@ -51,7 +51,7 @@ class NMDGenerate extends Command
             ])->thenReturn();
 
         $client = new \GuzzleHttp\Client();
-        $response = $client->post('https://webhook.site/b2c24ce5-0e28-499b-9307-88693fa8b52e', [
+        $response = $client->post('http://localhost:8080/api/v1/generate', [
             'headers' => [
                 'Content-Type' => 'application/json',
                 'Authorization' => $payload->getPrivateKey()
@@ -65,20 +65,6 @@ class NMDGenerate extends Command
         ]);
 
         $instructions = json_decode($response->getBody()->getContents(), true);
-
-        //mock instructions
-        $instructions = [
-            'for_creating' => [
-                [
-                    'path' => 'app/Models/Mock.php',
-                    'content' => '<?php echo "Hello World";'
-                ],
-                [
-                    'path' => 'app/Nova/Mock.php',
-                    'content' => '<?php echo "Hello World";'
-                ]
-            ]
-        ];
 
         $instructionExecutor = new InstructionExecutor(
             $instructions,

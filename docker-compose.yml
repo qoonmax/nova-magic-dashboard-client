@@ -3,14 +3,17 @@ version: '3.4'
 networks:
     internal:
         external: false
+    nmdc:
+        external: true
 
 services:
     nginx:
         image: nginx:latest
         networks:
             - internal
+            - nmdc
         ports:
-            - "8081:80"
+            - "80:80"
         volumes:
             - .:/var/www/
             - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
@@ -30,6 +33,7 @@ services:
         user: "1000:33"
         networks:
             - internal
+            - nmdc
         volumes:
             - .:/var/www/
             - ./docker/php/php.ini:/usr/local/etc/php/php.ini
@@ -38,6 +42,9 @@ services:
 
     postgres:
         image: library/postgres:12.3
+        networks:
+            - internal
+            - nmdc
         volumes:
             - ./pgsql_data:/var/lib/postgresql/data
         environment:
@@ -47,7 +54,5 @@ services:
             - PGGSSENCMODE=disable
         ports:
             - "5432:5432"
-        networks:
-            - internal
         restart: unless-stopped
         container_name: nmdc_postgres

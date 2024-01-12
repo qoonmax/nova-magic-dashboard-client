@@ -51,7 +51,7 @@ class NMDGenerate extends Command
             ])->thenReturn();
 
         $client = new \GuzzleHttp\Client();
-        $response = $client->post('http://localhost:8080/api/v1/generate', [
+        $response = $client->post('http://nova-magic-dashboard-backend:8080/api/v1/generate', [
             'headers' => [
                 'Content-Type' => 'application/json',
                 'Authorization' => $payload->getPrivateKey()

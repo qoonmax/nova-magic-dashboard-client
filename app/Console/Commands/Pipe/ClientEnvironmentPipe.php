@@ -10,7 +10,7 @@ class ClientEnvironmentPipe extends Pipe
 {
     public function handle(Request $request, callable $next): Request
     {
-        spin(fn() => sleep(2), "🔎  Getting the environment data...");
+        spin(fn() => sleep(2), "🔎  <fg=white>Getting the environment data...</>");
 
         $phpVersion = phpversion() ?? null;
         $laravelVersion = app()->version() ?? null;

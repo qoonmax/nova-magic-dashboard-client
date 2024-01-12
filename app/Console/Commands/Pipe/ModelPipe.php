@@ -12,7 +12,7 @@ class ModelPipe extends Pipe
 {
     public function handle(Request $request, callable $next): Request
     {
-        spin(fn() => sleep(5), "🔎  I'm looking for models in your project...");
+        spin(fn() => sleep(2), "🔎  <fg=white>I'm looking for models in your project...</>");
 
         $modelsPath = app_path('Models');
         $files = scandir($modelsPath);
@@ -23,13 +23,9 @@ class ModelPipe extends Pipe
 
         if (!empty($models)) {
             note(
-                message: 'The models folder is not empty. Please make sure that you have a backup of the models folder before continuing.',
-                type: 'alert'
-            );
-
-            note(
-                message: implode(' ', array_map(fn($model) => "[$model]", $models)),
-                type: 'warning'
+                message: '<fg=red>The models folder is not empty. Please make sure that you have a backup of the models folder before continuing.</>' . PHP_EOL
+                    . '<fg=red>' . implode(' ', array_map(fn($model) => "[<fg=white>$model</>]", $models)) . '</>',
+                type: 'info'
             );
 
             $permission = select(
@@ -43,7 +39,7 @@ class ModelPipe extends Pipe
             );
 
             if (!$permission) {
-                spin(fn() => sleep(2), "🛑  I'm finishing the process...");
+                spin(fn() => sleep(2), "⭕️  <fg=white>I'm finishing the process...</>");
                 die();
             }
         }

@@ -34,7 +34,7 @@ class DatabasePipe extends Pipe
            die();
         }
 
-        $tableNames = spin(fn() => $schemaInspector->getTableNames(), "🔎  I'm scanning the database...");
+        $tableNames = spin(fn() => $schemaInspector->getTableNames(), "🔎  <fg=white>I'm scanning the database...</>");
 
 
         usort($tableNames, function ($a, $b) {
@@ -63,8 +63,8 @@ class DatabasePipe extends Pipe
         foreach ($selectedTables as $tableName) {
             $tables[] = [
                 'name' => $tableName,
-                'fields' => spin(fn() => (array) $schemaInspector->getFields($tableName), "🔎  I'm scanning the database..."),
-                'data' => spin(fn() => $schemaInspector->getData($tableName), "🔎  I'm scanning the database..."),
+                'fields' => spin(fn() => (array) $schemaInspector->getFields($tableName), "🔎  <fg=white>I'm scanning the database...</>"),
+                'data' => spin(fn() => $schemaInspector->getData($tableName), "🔎  <fg=white>I'm scanning the database...</>"),
             ];
         }
 

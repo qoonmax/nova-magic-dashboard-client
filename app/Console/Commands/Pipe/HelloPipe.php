@@ -10,11 +10,8 @@ class HelloPipe extends Pipe
 {
     public function handle(Request $request, callable $next): Request
     {
-        info('🧙  Welcome to the Nova Magic Dashboard generator!');
-
         note(
-            message: 'This tool will create Laravel models, Nova resources, filters, lenses, menus based on your database structure. '
-            . PHP_EOL . 'All you have to do is check it out.',
+            message: "🧙  <fg=cyan>Welcome to the Nova Magic Dashboard generator!</>",
             type: 'info'
         );
 

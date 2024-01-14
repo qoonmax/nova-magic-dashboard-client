@@ -26,7 +26,7 @@ class ClientEnvironmentPipe extends Pipe
             'php_version' => $phpVersion,
             'laravel_version' => $laravelVersion,
             'nova_version' => $novaVersion,
-            'dbms_name' => $dbmsName
+            'database_driver_name' => $dbmsName
         ];
 
         foreach ($variables as $name => $value) {

@@ -9,7 +9,8 @@ class ClientEnvironmentPipe extends Pipe
 {
     public function handle(Context $context, callable $next): Context
     {
-        spin(fn() => sleep(2), "🔎  <fg=white>Getting the environment data...</>");
+        //TODO include delay for production
+        //spin(fn() => sleep(2), "🔎  <fg=white>Getting the environment data...</>");
 
         $phpVersion = phpversion() ?? null;
         $laravelVersion = app()->version() ?? null;

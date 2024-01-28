@@ -11,7 +11,8 @@ class ModelPipe extends Pipe
 {
     public function handle(Context $context, callable $next): Context
     {
-        spin(fn() => sleep(2), "🔎  <fg=white>I'm looking for models in your project...</>");
+        //TODO include delay for production
+        //spin(fn() => sleep(2), "🔎  <fg=white>I'm looking for models in your project...</>");
 
         $modelsPath = app_path('Models');
         $files = scandir($modelsPath);
@@ -38,7 +39,8 @@ class ModelPipe extends Pipe
             );
 
             if (!$permission) {
-                spin(fn() => sleep(2), "⭕️  <fg=white>I'm finishing the process...</>");
+                //TODO include delay for production
+                //spin(fn() => sleep(2), "⭕️  <fg=white>I'm finishing the process...</>");
                 die();
             }
         }

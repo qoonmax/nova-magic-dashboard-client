@@ -28,15 +28,25 @@ class PGSQLSchemaInspector implements DatabaseSchemaInspector
         $fields = DB::select('SELECT * FROM information_schema.columns WHERE table_name = ?', [$tableName]);
 
         //TODO: get foreign key from pg_constraint OR try to predict it from the name
+        $foreignKeys = DB::select("
+            SELECT a.attname AS column_name,
+               conrelid::regclass AS table_name,
+               confrelid::regclass AS referenced_table_name
+            FROM pg_constraint
+                JOIN pg_attribute a ON a.attnum = ANY(conkey) AND a.attrelid = conrelid
+            WHERE  contype = 'f'
+                AND connamespace = 'public'::regnamespace
+            ORDER  BY conrelid::regclass::text, contype DESC;
+        ");
 
-//        SELECT a.attname AS column_name,
-//       conrelid::regclass AS table_name,
-//       confrelid::regclass AS referenced_table_nam
-//FROM   pg_constraint
-//           JOIN   pg_attribute a ON a.attnum = ANY(conkey) AND a.attrelid = conrelid
-//WHERE  contype = 'f'
-//    AND    connamespace = 'public'::regnamespace
-//ORDER  BY conrelid::regclass::text, contype DESC;
+        foreach ($fields as $field) {
+            foreach ($foreignKeys as $foreignKey) {
+                if ($foreignKey->column_name === $field->column_name) {
+                    $field->is_foreign_key = true;
+                    $field->referenced_table_name = $foreignKey->referenced_table_name;
+                }
+            }
+        }
 
         return array_map(function ($field) {
             return new Field($field);

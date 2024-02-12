@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\DatabaseSchemaInspector;
 
-use App\Console\Commands\DatabaseSchemaInspector\PGSQL\Field;
+use App\Console\Commands\DatabaseSchemaInspector\PGSQL\Column;
 
 interface DatabaseSchemaInspector
 {
@@ -13,7 +13,7 @@ interface DatabaseSchemaInspector
 
     /**
      * @param string $tableName
-     * @return Field[]
+     * @return Column[]
      */
     public function getFields(string $tableName): array;
 

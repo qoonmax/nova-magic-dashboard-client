@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands\DatabaseSchemaInspector\PGSQL;
 
-readonly class Field
+readonly class Column
 {
     public string $table_name;
     public string $column_name;
@@ -11,6 +11,7 @@ readonly class Field
     public string $data_type;
     public bool $is_foreign_key;
     public ?string $referenced_table_name;
+    public ?string $referenced_owner_key;
 
     public function __construct(object $field)
     {
@@ -22,5 +23,6 @@ readonly class Field
         $this->data_type = $field->data_type;
         $this->is_foreign_key = $field->is_foreign_key ?? false;
         $this->referenced_table_name = $field->referenced_table_name ?? null;
+        $this->referenced_owner_key = $field->referenced_owner_key ?? null;
     }
 }

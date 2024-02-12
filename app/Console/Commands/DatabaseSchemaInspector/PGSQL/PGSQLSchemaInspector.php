@@ -21,17 +21,21 @@ class PGSQLSchemaInspector implements DatabaseSchemaInspector
 
     /**
      * @param string $tableName
-     * @return Field[]
+     * @return Column[]
      */
     public function getFields(string $tableName): array
     {
-        $fields = DB::select('SELECT * FROM information_schema.columns WHERE table_name = ?', [$tableName]);
+        $columns = DB::select('SELECT * FROM information_schema.columns WHERE table_name = ?', [$tableName]);
 
         //TODO: get foreign key from pg_constraint OR try to predict it from the name
         $foreignKeys = DB::select("
             SELECT a.attname AS column_name,
-               conrelid::regclass AS table_name,
-               confrelid::regclass AS referenced_table_name
+                conrelid::regclass AS table_name,
+                confrelid::regclass AS referenced_table_name,
+                (SELECT attname
+                FROM pg_attribute
+                WHERE attrelid = confrelid
+                    AND attnum = ANY(confkey)) AS referenced_owner_key
             FROM pg_constraint
                 JOIN pg_attribute a ON a.attnum = ANY(conkey) AND a.attrelid = conrelid
             WHERE  contype = 'f'
@@ -39,18 +43,19 @@ class PGSQLSchemaInspector implements DatabaseSchemaInspector
             ORDER  BY conrelid::regclass::text, contype DESC;
         ");
 
-        foreach ($fields as $field) {
+        foreach ($columns as $column) {
             foreach ($foreignKeys as $foreignKey) {
-                if ($foreignKey->column_name === $field->column_name) {
-                    $field->is_foreign_key = true;
-                    $field->referenced_table_name = $foreignKey->referenced_table_name;
+                if ($foreignKey->column_name === $column->column_name) {
+                    $column->is_foreign_key = true;
+                    $column->referenced_table_name = $foreignKey->referenced_table_name;
+                    $column->referenced_owner_key = $foreignKey->referenced_owner_key;
                 }
             }
         }
 
         return array_map(function ($field) {
-            return new Field($field);
-        }, $fields);
+            return new Column($field);
+        }, $columns);
     }
 
     /**

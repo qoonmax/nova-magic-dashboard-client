@@ -11,8 +11,8 @@ class Comment extends Model
 
     protected $table = 'comments';
 
-    public function quiz (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function post (): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Quiz::class);
+        return $this->belongsTo(\App\Models\Comment::class,'post_id', 'id', 'post');
     }
 }

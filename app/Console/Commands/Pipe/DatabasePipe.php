@@ -61,7 +61,7 @@ class DatabasePipe extends Pipe
         foreach ($selectedTables as $tableName) {
             $tables[] = [
                 'name' => $tableName,
-                'fields' => spin(fn() => (array) $schemaInspector->getFields($tableName), "🔎  <fg=white>I'm scanning the database...</>"),
+                'columns' => spin(fn() => (array) $schemaInspector->getFields($tableName), "🔎  <fg=white>I'm scanning the database...</>"),
                 'data' => spin(fn() => $schemaInspector->getData($tableName), "🔎  <fg=white>I'm scanning the database...</>"),
             ];
         }

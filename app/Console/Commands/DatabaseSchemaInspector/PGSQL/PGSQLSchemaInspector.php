@@ -30,7 +30,6 @@ class PGSQLSchemaInspector implements DatabaseSchemaInspector
         //TODO: get foreign key from pg_constraint OR try to predict it from the name
         $foreignKeys = DB::select("
             SELECT a.attname AS column_name,
-                conrelid::regclass AS table_name,
                 confrelid::regclass AS referenced_table_name,
                 (SELECT attname
                 FROM pg_attribute

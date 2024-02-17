@@ -4,7 +4,6 @@ namespace App\Console\Commands\DatabaseSchemaInspector\PGSQL;
 
 readonly class Column
 {
-    public string $table_name;
     public string $column_name;
     public ?string $column_default;
     public string $is_nullable;
@@ -16,7 +15,6 @@ readonly class Column
     public function __construct(object $field)
     {
         // TODO return exception if field is not an object
-        $this->table_name = $field->table_name;
         $this->column_name = $field->column_name;
         $this->column_default = $field->column_default ?? null;
         $this->is_nullable = $field->is_nullable;

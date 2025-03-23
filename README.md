@@ -1,7 +1,3 @@
-# nova-magic-dashboard-client
+# Nova magic dashboard client
 
-## Локальная разработка
-
-1. Создать .env файл в корне проекта и заполнить его по примеру .env.example.
-2. Запуск проекта: `docker compose up -d --build`
-3. Выполнение команды внутри контейнера: `docker compose exec -it php php artisan magic:generate` (для запуска генерации).
+This Laravel package provides the client-side part of a project designed for the automatic generation of models and resources for Laravel Nova based on the database structure. It simplifies the integration process with Laravel Nova, allowing developers to quickly create and configure the admin panel without manually defining models and resources.
